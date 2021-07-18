@@ -111,7 +111,7 @@ export default defineComponent({
   }),
   computed: {
     isSelectAll(): boolean {
-      return !this.values.find((x) => !this.selected[x[this.valueKey]]);
+      return !this.valuesFromSearch.find((x) => !this.selected[x[this.valueKey]]);
     },
     valuesFromSearch(): IData[] {
       const searchText = this.searchText;

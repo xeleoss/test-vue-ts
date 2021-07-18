@@ -62,8 +62,8 @@ export default defineComponent({
     },
   },
   computed: {
-    selectedKeys(): boolean {
-      return !!Object.keys(this.selected).filter((x) => this.selected[x]);
+    selectedKeys(): string[] {
+      return Object.keys(this.selected).filter((x) => this.selected[x]);
     },
     tableValuesForKeys(): { [key: string]: IData } {
       return this.values.reduce(
