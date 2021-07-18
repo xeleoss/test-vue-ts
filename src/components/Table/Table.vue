@@ -75,7 +75,7 @@ export default defineComponent({
     },
     onSelectAll() {
       const value = !this.isSelectAll;
-      this.values.forEach((x) => {
+      this.valuesFromSearch.forEach((x) => {
         this.selected[x[this.valueKey]] = value;
       });
       if (this.onSelectChange) {
