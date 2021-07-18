@@ -1,32 +1,29 @@
 <template>
   <Table
-      v-bind:headings="headings"
-      v-bind:values="values"
-      v-bind:on-sort="onSort"
-      v-bind:on-select-change="onSelectedChange"
-      value-key="name"
-
+    v-bind:headings="headings"
+    v-bind:values="values"
+    v-bind:on-sort="onSort"
+    v-bind:on-select-change="onSelectedChange"
+    value-key="name"
   />
   <div>
     <h3>Выбранные записи</h3>
     <ul>
       <li v-bind:key="selectedKey" v-for="selectedKey in selectedKeys">
-        {{
-          tableValuesForKeys[selectedKey].name
-        }}
+        {{ tableValuesForKeys[selectedKey].name }}
       </li>
     </ul>
   </div>
 </template>
 
 <script lang="ts">
-import Table from './components/Table/Table.vue';
-import {IData, IHeading, ISort} from '@/components/Table/types';
-import fakeData from '@/garbage/fakeData';
-import {defineComponent} from 'vue';
+import Table from "./components/Table/Table.vue";
+import { IData, IHeading, ISort } from "@/components/Table/types";
+import fakeData from "@/garbage/fakeData";
+import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: 'App',
+  name: "App",
   components: {
     Table,
   },
@@ -34,7 +31,7 @@ export default defineComponent({
     headings: fakeData.tableHeadings as IHeading[],
     values: fakeData.tableData as IData[],
     selected: {} as { [key: string]: boolean },
-    valueKey: 'name',
+    valueKey: "name",
   }),
   methods: {
     onSort(sort: ISort) {
@@ -52,7 +49,7 @@ export default defineComponent({
         return 0;
       }
 
-      if (sort.direction === 'ask') {
+      if (sort.direction === "ask") {
         this.values = this.values.sort(compare).reverse();
       } else {
         this.values = this.values.sort(compare);
@@ -68,11 +65,11 @@ export default defineComponent({
     },
     tableValuesForKeys(): { [key: string]: IData } {
       return this.values.reduce(
-          (accumulator: { [key: string]: IData }, currentValue: IData) => {
-            accumulator[currentValue[this.valueKey]] = currentValue;
-            return accumulator;
-          },
-          {}
+        (accumulator: { [key: string]: IData }, currentValue: IData) => {
+          accumulator[currentValue[this.valueKey]] = currentValue;
+          return accumulator;
+        },
+        {}
       );
     },
   },

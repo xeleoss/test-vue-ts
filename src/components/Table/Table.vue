@@ -23,9 +23,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-bind:key="value[valueKey]" v-for="value in valuesFromSearch">
-          <td v-bind:onclick="() => onSelect(value)">
-            <input type="checkbox" v-bind:checked="selected[value[valueKey]]" />
+        <tr
+          v-bind:key="value[valueKey]"
+          v-for="value in valuesFromSearch"
+          v-bind:onclick="() => onSelect(value)"
+          v-bind:data-selected="getChecked(value)"
+        >
+          <td>
+            <input type="checkbox" v-bind:checked="getChecked(value)" />
           </td>
           <td v-bind:key="heading.name" v-for="heading in headings">
             {{ value[heading.name] }}
@@ -72,6 +77,9 @@ export default defineComponent({
         this.onSelectChange(this.selected);
       }
     },
+    getChecked(value: IData) {
+      return this.selected[value[this.valueKey]];
+    },
   },
   props: {
     values: {
@@ -108,7 +116,7 @@ export default defineComponent({
       );
     },
     valuesFromSearch(): IData[] {
-      const searchText = this.searchText;
+      const searchText = this.searchText.toLowerCase();
       if (searchText.length === 0) {
         return this.values;
       }
@@ -120,7 +128,7 @@ export default defineComponent({
 
         return Object.keys(value).find((key) => {
           const valueKey: any = value[key as keyof IData];
-          return valueKey?.toString().includes(searchText) ?? "";
+          return valueKey?.toString().toLowerCase().includes(searchText) ?? "";
         });
       });
     },
@@ -166,8 +174,16 @@ table {
         background-color: #f2f2f2;
       }
 
+      &[data-selected="true"] {
+        background-color: rgba(167, 199, 255, 0.42);
+      }
+
+      &[data-selected="true"]:nth-child(even) {
+        background-color: rgba(139, 179, 255, 0.42);
+      }
+
       &:hover {
-        background-color: #ddd;
+        background-color: #ddd !important;
       }
     }
   }
