@@ -81,6 +81,6 @@ export default defineComponent({
 
 <style lang="scss">
 html {
-  font-family: Arial, "Calibri Light", Calibri, serif;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 }
 </style>

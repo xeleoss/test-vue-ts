@@ -1,60 +1,50 @@
 <template>
-  <div class="hello">
-    <label>
+  <div>
+    <label class="search-input">
       Поиск:
-      <input v-model="searchText">
+      <input v-model="searchText" />
     </label>
     <table>
       <thead>
-      <tr>
-        <td>
-          <input
-              type="checkbox"
-              v-bind:checked="isSelectAll"
-              v-bind:onclick="onSelectAll"
-          />
-        </td>
-        <td
+        <tr>
+          <td v-bind:onclick="onSelectAll">
+            <input type="checkbox" v-bind:checked="isSelectAll" />
+          </td>
+          <td
             v-bind:key="heading.name"
             v-for="heading in headings"
             v-bind:onclick="(e) => onSortByKey(heading.name)"
-        >
-          <span>{{ heading.label }}</span>
-          <span v-if="sort.name === heading.name">
-            {{
-              sort.direction === 'ask' ? '↑' : '↓'
-            }}
-          </span>
-        </td>
-      </tr>
+          >
+            <span>{{ heading.label }}</span>
+            <span v-if="sort.name === heading.name">
+              {{ sort.direction === "ask" ? "↑" : "↓" }}
+            </span>
+          </td>
+        </tr>
       </thead>
       <tbody>
-      <tr v-bind:key="value[valueKey]" v-for="value in valuesFromSearch">
-        <td>
-          <input
-              type="checkbox"
-              v-bind:checked="selected[value[valueKey]]"
-              v-bind:onclick="() => onSelect(value)"
-          />
-        </td>
-        <td v-bind:key="heading.name" v-for="heading in headings">
-          {{ value[heading.name] }}
-        </td>
-      </tr>
+        <tr v-bind:key="value[valueKey]" v-for="value in valuesFromSearch">
+          <td v-bind:onclick="() => onSelect(value)">
+            <input type="checkbox" v-bind:checked="selected[value[valueKey]]" />
+          </td>
+          <td v-bind:key="heading.name" v-for="heading in headings">
+            {{ value[heading.name] }}
+          </td>
+        </tr>
       </tbody>
     </table>
-    <div>
+    <div class="total-entries">
       Показано {{ valuesFromSearch.length }} из {{ values.length }} записей
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from 'vue';
-import {IData, IHeading, ISort} from '@/components/Table/types';
+import { defineComponent, PropType } from "vue";
+import { IData, IHeading, ISort } from "@/components/Table/types";
 
 export default defineComponent({
-  name: 'Table',
+  name: "Table",
   methods: {
     onSortByKey(propKey: keyof IData) {
       if (propKey !== this.sort.name) {
@@ -63,7 +53,7 @@ export default defineComponent({
 
       this.sort = {
         name: propKey,
-        direction: this.sort.direction === 'desk' ? 'ask' : 'desk',
+        direction: this.sort.direction === "desk" ? "ask" : "desk",
       };
       this.onSort(this.sort);
     },
@@ -101,17 +91,21 @@ export default defineComponent({
       required: true,
     },
     onSelectChange: {
-      type: Function as PropType<(selected: { [key: string]: boolean }) => void>,
+      type: Function as PropType<
+        (selected: { [key: string]: boolean }) => void
+      >,
     },
   },
   data: () => ({
     sort: {} as ISort,
     selected: {} as { [key: string]: boolean },
-    searchText: '' as string,
+    searchText: "" as string,
   }),
   computed: {
     isSelectAll(): boolean {
-      return !this.valuesFromSearch.find((x) => !this.selected[x[this.valueKey]]);
+      return !this.valuesFromSearch.find(
+        (x) => !this.selected[x[this.valueKey]]
+      );
     },
     valuesFromSearch(): IData[] {
       const searchText = this.searchText;
@@ -119,20 +113,17 @@ export default defineComponent({
         return this.values;
       }
 
-      return this.values.filter(
-          (value: IData) => {
-            if (!value) {
-              return false;
-            }
+      return this.values.filter((value: IData) => {
+        if (!value) {
+          return false;
+        }
 
-            return Object.keys(value)
-                .find((key) => {
-                  const valueKey: any = value[key as keyof IData];
-                  return valueKey?.toString().includes(searchText) ?? "";
-                });
-          }
-      );
-    }
+        return Object.keys(value).find((key) => {
+          const valueKey: any = value[key as keyof IData];
+          return valueKey?.toString().includes(searchText) ?? "";
+        });
+      });
+    },
   },
 });
 </script>
@@ -140,15 +131,22 @@ export default defineComponent({
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 table {
+  border-spacing: 0;
+  border-collapse: collapse;
+
   thead {
     tr {
       td {
-        padding: 10px;
         cursor: pointer;
         text-align: center;
         font-size: 18px;
         font-weight: bold;
         user-select: none;
+        background-color: #04aa6d;
+        color: white;
+        padding-top: 11px;
+        padding-bottom: 11px;
+        width: 1%;
       }
 
       background-color: aliceblue;
@@ -158,13 +156,34 @@ table {
   tbody {
     tr {
       td {
-        padding: 5px;
+        padding: 8px;
         cursor: pointer;
         text-align: center;
+        border: 1px solid #ddd;
       }
 
-      background-color: azure;
+      &:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      &:hover {
+        background-color: #ddd;
+      }
     }
+  }
+}
+
+.total-entries {
+  padding: 10px;
+  text-align: center;
+}
+
+.search-input {
+  display: block;
+  padding: 10px;
+
+  input {
+    font-size: 18px;
   }
 }
 </style>
