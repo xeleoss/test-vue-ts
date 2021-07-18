@@ -1,16 +1,11 @@
-export interface IData {
-  id: number;
-  fio: string;
-  post: string;
-  department: string;
-}
+export type IData = { [key: string]: string | number };
 
 export interface IHeading {
-  title: string;
-  propKey: keyof IData;
+  label: string;
+  name: string;
 }
 
 export interface ISort {
-  propKey?: keyof IData;
+  name?: keyof IData;
   direction?: "ask" | "desk";
 }

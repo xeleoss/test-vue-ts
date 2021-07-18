@@ -15,12 +15,12 @@
           />
         </td>
         <td
-            v-bind:key="heading.propKey"
+            v-bind:key="heading.name"
             v-for="heading in headings"
-            v-bind:onclick="(e) => onSortByKey(heading.propKey)"
+            v-bind:onclick="(e) => onSortByKey(heading.name)"
         >
-          <span>{{ heading.title }}</span>
-          <span v-if="sort.propKey === heading.propKey">
+          <span>{{ heading.label }}</span>
+          <span v-if="sort.name === heading.name">
             {{
               sort.direction === 'ask' ? '↑' : '↓'
             }}
@@ -29,7 +29,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-bind:key="value.id" v-for="value in valuesFromSearch">
+      <tr v-bind:key="value[valueKey]" v-for="value in valuesFromSearch">
         <td>
           <input
               type="checkbox"
@@ -37,8 +37,8 @@
               v-bind:onclick="() => onSelect(value)"
           />
         </td>
-        <td v-bind:key="heading.propKey" v-for="heading in headings">
-          {{ value[heading.propKey] }}
+        <td v-bind:key="heading.name" v-for="heading in headings">
+          {{ value[heading.name] }}
         </td>
       </tr>
       </tbody>
@@ -57,12 +57,12 @@ export default defineComponent({
   name: 'Table',
   methods: {
     onSortByKey(propKey: keyof IData) {
-      if (propKey !== this.sort.propKey) {
+      if (propKey !== this.sort.name) {
         this.sort.direction = undefined;
       }
 
       this.sort = {
-        propKey,
+        name: propKey,
         direction: this.sort.direction === 'desk' ? 'ask' : 'desk',
       };
       this.onSort(this.sort);
@@ -97,7 +97,7 @@ export default defineComponent({
       required: true,
     },
     valueKey: {
-      type: String as PropType<keyof IData>,
+      type: String,
       required: true,
     },
     onSelectChange: {
@@ -119,8 +119,6 @@ export default defineComponent({
         return this.values;
       }
 
-
-      console.log(this.values);
       return this.values.filter(
           (value: IData) => {
             if (!value) {
@@ -129,7 +127,8 @@ export default defineComponent({
 
             return Object.keys(value)
                 .find((key) => {
-                  return value[key as keyof IData].toString().includes(searchText);
+                  const valueKey: any = value[key as keyof IData];
+                  return valueKey?.toString().includes(searchText) ?? "";
                 });
           }
       );

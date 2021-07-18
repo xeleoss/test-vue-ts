@@ -4,7 +4,7 @@
       v-bind:values="values"
       v-bind:on-sort="onSort"
       v-bind:on-select-change="onSelectedChange"
-      value-key="id"
+      value-key="name"
 
   />
   <div>
@@ -12,7 +12,7 @@
     <ul>
       <li v-bind:key="selectedKey" v-for="selectedKey in selectedKeys">
         {{
-          tableValuesForKeys[selectedKey].fio
+          tableValuesForKeys[selectedKey].name
         }}
       </li>
     </ul>
@@ -34,18 +34,19 @@ export default defineComponent({
     headings: fakeData.tableHeadings as IHeading[],
     values: fakeData.tableData as IData[],
     selected: {} as { [key: string]: boolean },
+    valueKey: 'name',
   }),
   methods: {
     onSort(sort: ISort) {
-      if (!sort || !sort.propKey) {
+      if (!sort || !sort.name) {
         return;
       }
 
       function compare(a: any, b: any) {
-        if (a[sort.propKey!] < b[sort.propKey!]) {
+        if (a[sort.name!] < b[sort.name!]) {
           return -1;
         }
-        if (a[sort.propKey!] > b[sort.propKey!]) {
+        if (a[sort.name!] > b[sort.name!]) {
           return 1;
         }
         return 0;
@@ -68,7 +69,7 @@ export default defineComponent({
     tableValuesForKeys(): { [key: string]: IData } {
       return this.values.reduce(
           (accumulator: { [key: string]: IData }, currentValue: IData) => {
-            accumulator[currentValue.id] = currentValue;
+            accumulator[currentValue[this.valueKey]] = currentValue;
             return accumulator;
           },
           {}
